@@ -4,13 +4,17 @@ import os
 
 app = Flask(__name__)
 
-# Configure Gemini API
-# Add your Gemini API key here
-GEMINI_API_KEY = ""  # Replace with your actual API key
-genai.configure(api_key=GEMINI_API_KEY)
-
-# Initialize Gemini model
-model = genai.GenerativeModel('gemini-2.0-flash')
+# Configure Gemini API from environment variable
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY') or ""
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+    try:
+        model = genai.GenerativeModel('gemini-2.0-flash')
+    except Exception as e:
+        print(f"Warning: failed to initialize Gemini model: {e}")
+        model = None
+else:
+    model = None
 
 # Mental health focused system prompt
 SYSTEM_PROMPT = """You are "Cosmic Crisis AI Bestie" — a proactive safety and emotional support chatbot. 

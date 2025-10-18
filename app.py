@@ -22,17 +22,32 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # =============== TWILIO SETUP ===============
-# Replace these with your credentials
-account_sid = ""
-auth_token = ""
-twilio_whatsapp = "whatsapp:+14155238886"   # Sandbox number
-my_whatsapp = "whatsapp:+918595092765"
-client = Client(account_sid, auth_token)
+# Load Twilio credentials from environment variables to avoid hard-coding secrets.
+# Set these in your environment or in a local .env file (do NOT commit .env).
+account_sid = os.getenv('TWILIO_ACCOUNT_SID') or ""
+auth_token = os.getenv('TWILIO_AUTH_TOKEN') or ""
+twilio_whatsapp = os.getenv('TWILIO_WHATSAPP_FROM', 'whatsapp:+14155238886')   # Sandbox number as default
+my_whatsapp = os.getenv('MY_WHATSAPP_TO', 'whatsapp:+918595092765')
+
+# Initialize Twilio client only if credentials are present. Otherwise client operations will fail
+# with a clear error when attempted.
+if account_sid and auth_token:
+    client = Client(account_sid, auth_token)
+else:
+    client = None
 
 # =============== GEMINI SETUP ===============
-GEMINI_API_KEY = ""  # Replace with your actual API key
-genai.configure(api_key=GEMINI_API_KEY)
-gemini_model = genai.GenerativeModel('gemini-2.0-flash')
+# Gemini API key should be provided via environment variable GEMINI_API_KEY
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY') or ""
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+    try:
+        gemini_model = genai.GenerativeModel('gemini-2.0-flash')
+    except Exception as e:
+        print(f"Warning: failed to initialize Gemini model: {e}")
+        gemini_model = None
+else:
+    gemini_model = None
 
 # =============== YAMNET MODEL SETUP ===============
 # Load YAMNet model (load once at startup)
