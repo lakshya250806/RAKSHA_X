@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Audio Detection System</title>
+    <link rel="stylesheet" href="/static/theme.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="brand">RAKHA X</div>
+        <h2>🔊 Smart Audio Detection System</h2>
+        <p>Detects risky sounds and emergency phrases in real-time.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="audio/*" required>
+            <br>
+            <input type="submit" value="Upload & Analyze">
+        </form>
+
+        {% if results %}
+            <h3>Top Detected Sounds:</h3>
+            <ul>
+                {% for label, score in results %}
+                    <li>{{ label }} ({{ score }}%)</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Speech Detected:</h3>
+            <p><b>{{ speech_text }}</b></p>
+
+            {% if alert %}
+                <p class="map-unsafe">🚨 ALERT! Emergency detected!</p>
+            {% else %}
+                <p class="map-safe">✅ Environment Safe</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

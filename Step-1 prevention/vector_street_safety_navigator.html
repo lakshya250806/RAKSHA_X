@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Safety Navigator - Vector Map Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            z-index: 1000;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: white;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            color: #f0f0f0;
+        }
+
+        .demo-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            padding: 20px;
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            gap: 20px;
+            position: relative;
+        }
+
+        .map-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .controls {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 5px;
+        }
+
+        .control-btn {
+            background: linear-gradient(45deg, #4f46e5, #3730a3);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 40px;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(79, 70, 229, 0.3);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #dc2626, #991b1b);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-left: 15px;
+        }
+
+        .map-svg {
+            width: 100%;
+            height: 600px;
+            border: 3px solid #e5e7eb;
+            border-radius: 15px;
+            background: #f8fafc;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .safety-panel {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #dee2e6;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .safety-panel.safe {
+            background: linear-gradient(135deg, #d1fae5, #ecfdf5);
+            border-color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .safety-panel.caution {
+            background: linear-gradient(135deg, #fef3c7, #fffbeb);
+            border-color: #f59e0b;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+
+        .safety-panel.unsafe {
+            background: linear-gradient(135deg, #fecaca, #fef2f2);
+            border-color: #ef4444;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+            animation: danger-pulse 2s infinite;
+        }
+
+        @keyframes danger-pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+        }
+
+        .safety-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .safety-icon {
+            font-size: 24px;
+        }
+
+        .street-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .safety-description {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .safety-tips {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #374151;
+            border-left: 4px solid;
+        }
+
+        .safety-tips.safe { border-left-color: #10b981; }
+        .safety-tips.caution { border-left-color: #f59e0b; }
+        .safety-tips.unsafe { border-left-color: #ef4444; }
+
+        .legend {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .legend h3 {
+            color: #1f2937;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #4b5563;
+        }
+
+        .legend-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .safe-dot { background: #10b981; }
+        .caution-dot { background: #f59e0b; }
+        .unsafe-dot { background: #ef4444; }
+
+        .instructions {
+            background: #1f2937;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Street styles */
+        .street {
+            fill: #9ca3af;
+            stroke: #6b7280;
+            stroke-width: 1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .street.visited.safe {
+            fill: #10b981;
+            stroke: #059669;
+        }
+
+        .street.visited.caution {
+            fill: #f59e0b;
+            stroke: #d97706;
+        }
+
+        .street.visited.unsafe {
+            fill: #ef4444;
+            stroke: #dc2626;
+        }
+
+        .building {
+            fill: #e5e7eb;
+            stroke: #d1d5db;
+            stroke-width: 1;
+        }
+
+        .park {
+            fill: #84cc16;
+            stroke: #65a30d;
+            stroke-width: 1;
+        }
+
+        .character {
+            fill: #ec4899;
+            stroke: white;
+            stroke-width: 3;
+            filter: drop-shadow(0 4px 8px rgba(236, 72, 153, 0.4));
+            animation: character-glow 3s infinite;
+        }
+
+        @keyframes character-glow {
+            0%, 100% { filter: drop-shadow(0 4px 8px rgba(236, 72, 153, 0.4)); }
+            50% { filter: drop-shadow(0 6px 15px rgba(236, 72, 153, 0.6)); }
+        }
+
+        .initial-message {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .demo-container {
+                flex-direction: column;
+                padding: 15px;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .map-svg {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ Street Safety Navigator</h1>
+        <p>Navigate the city and discover street safety levels in real-time</p>
+    </div>
+
+    <div class="demo-container">
+        <div class="map-container">
+            <div class="controls">
+                <div class="control-group">
+                    <div class="control-row">
+                        <button class="control-btn" onclick="moveCharacter('up')">↑</button>
+                    </div>
+                    <div class="control-row">
+                        <button class="control-btn" onclick="moveCharacter('left')">←</button>
+                        <button class="control-btn" onclick="moveCharacter('down')">↓</button>
+                        <button class="control-btn" onclick="moveCharacter('right')">→</button>
+                    </div>
+                </div>
+                <button class="control-btn reset-btn" onclick="resetCharacter()">🔄 Reset Position</button>
+            </div>
+
+            <svg class="map-svg" id="mapSvg" viewBox="0 0 800 600">
+                <!-- Background -->
+                <rect width="800" height="600" fill="#f8fafc"/>
+                
+                <!-- Buildings (gray blocks) -->
+                <rect x="50" y="50" width="120" height="80" class="building"/>
+                <rect x="200" y="50" width="100" height="80" class="building"/>
+                <rect x="350" y="50" width="140" height="80" class="building"/>
+                <rect x="520" y="50" width="110" height="80" class="building"/>
+                <rect x="650" y="50" width="120" height="80" class="building"/>
+                
+                <rect x="50" y="180" width="120" height="90" class="building"/>
+                <rect x="200" y="180" width="100" height="90" class="building"/>
+                <rect x="520" y="180" width="110" height="90" class="building"/>
+                <rect x="650" y="180" width="120" height="90" class="building"/>
+                
+                <rect x="50" y="320" width="120" height="85" class="building"/>
+                <rect x="200" y="320" width="100" height="85" class="building"/>
+                <rect x="350" y="320" width="140" height="85" class="building"/>
+                <rect x="520" y="320" width="110" height="85" class="building"/>
+                <rect x="650" y="320" width="120" height="85" class="building"/>
+                
+                <rect x="50" y="450" width="120" height="100" class="building"/>
+                <rect x="200" y="450" width="100" height="100" class="building"/>
+                <rect x="520" y="450" width="110" height="100" class="building"/>
+                <rect x="650" y="450" width="120" height="100" class="building"/>
+                
+                <!-- Parks (green areas) -->
+                <rect x="330" y="180" width="160" height="90" class="park"/>
+                <rect x="330" y="450" width="160" height="100" class="park"/>
+                
+                <!-- Streets (horizontal) -->
+                <rect x="0" y="150" width="800" height="25" class="street" data-street="Main Street" data-safety="safe"/>
+                <rect x="0" y="290" width="800" height="25" class="street" data-street="Central Avenue" data-safety="caution"/>
+                <rect x="0" y="420" width="800" height="25" class="street" data-street="Oak Boulevard" data-safety="unsafe"/>
+                
+                <!-- Streets (vertical) -->
+                <rect x="175" y="0" width="20" height="600" class="street" data-street="First Street" data-safety="safe"/>
+                <rect x="305" y="0" width="20" height="600" class="street" data-street="Second Street" data-safety="caution"/>
+                <rect x="495" y="0" width="20" height="600" class="street" data-street="Third Street" data-safety="unsafe"/>
+                <rect x="635" y="0" width="20" height="600" class="street" data-street="Fourth Street" data-safety="safe"/>
+                
+                <!-- Additional connecting streets -->
+                <rect x="0" y="25" width="800" height="20" class="street" data-street="North Road" data-safety="caution"/>
+                <rect x="0" y="575" width="800" height="25" class="street" data-street="South Street" data-safety="unsafe"/>
+                
+                <!-- Character (female icon) -->
+                <circle id="character" cx="185" cy="162" r="12" class="character"/>
+                <text x="185" y="167" text-anchor="middle" fill="white" font-size="12" font-weight="bold" pointer-events="none">👩</text>
+            </svg>
+        </div>
+
+        <div class="sidebar">
+            <div class="safety-panel" id="safetyPanel">
+                <div class="initial-message">
+                    <h3>🚶‍♀️ Start Exploring</h3>
+                    <p>Use arrow keys to navigate through the streets. Safety information will be revealed as you explore different areas.</p>
+                </div>
+            </div>
+
+            <div class="legend">
+                <h3>Safety Levels</h3>
+                <div class="legend-item">
+                    <div class="legend-dot safe-dot"></div>
+                    <span>Safe Zone - Well protected area</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot caution-dot"></div>
+                    <span>Caution Zone - Moderate risk</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot unsafe-dot"></div>
+                    <span>Unsafe Zone - High risk area</span>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <strong>How to Navigate:</strong><br>
+                • Use ↑↓←→ arrow keys to move<br>
+                • Character moves along street paths only<br>
+                • Safety status reveals when entering new streets<br>
+                • Explore different areas to discover safety levels
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class StreetSafetyNavigator {
+            constructor() {
+                this.character = document.getElementById('character');
+                this.characterText = this.character.nextElementSibling;
+                this.safetyPanel = document.getElementById('safetyPanel');
+                
+                this.currentX = 185;
+                this.currentY = 162;
+                this.currentStreet = null;
+                this.visitedStreets = new Set();
+                this.moveStep = 15;
+
+                // Street data with randomized safety (hidden initially)
+                this.streets = {
+                    "Main Street": {
+                        safety: this.getRandomSafety(),
+                        description: "Primary commercial street through downtown",
+                        bounds: { minX: 0, maxX: 800, minY: 150, maxY: 175 }
+                    },
+                    "Central Avenue": {
+                        safety: this.getRandomSafety(),
+                        description: "Mixed residential and commercial area",
+                        bounds: { minX: 0, maxX: 800, minY: 290, maxY: 315 }
+                    },
+                    "Oak Boulevard": {
+                        safety: this.getRandomSafety(),
+                        description: "Residential street with tree-lined sidewalks",
+                        bounds: { minX: 0, maxX: 800, minY: 420, maxY: 445 }
+                    },
+                    "First Street": {
+                        safety: this.getRandomSafety(),
+                        description: "Historic district with vintage shops",
+                        bounds: { minX: 175, maxX: 195, minY: 0, maxY: 600 }
+                    },
+                    "Second Street": {
+                        safety: this.getRandomSafety(),
+                        description: "Business district with office buildings",
+                        bounds: { minX: 305, maxX: 325, minY: 0, maxY: 600 }
+                    },
+                    "Third Street": {
+                        safety: this.getRandomSafety(),
+                        description: "Quiet residential area",
+                        bounds: { minX: 495, maxX: 515, minY: 0, maxY: 600 }
+                    },
+                    "Fourth Street": {
+                        safety: this.getRandomSafety(),
+                        description: "Entertainment district with restaurants",
+                        bounds: { minX: 635, maxX: 655, minY: 0, maxY: 600 }
+                    },
+                    "North Road": {
+                        safety: this.getRandomSafety(),
+                        description: "Northern perimeter road",
+                        bounds: { minX: 0, maxX: 800, minY: 25, maxY: 45 }
+                    },
+                    "South Street": {
+                        safety: this.getRandomSafety(),
+                        description: "Southern industrial area",
+                        bounds: { minX: 0, maxX: 800, minY: 575, maxY: 600 }
+                    }
+                };
+
+                this.setupEventListeners();
+                this.checkCurrentStreet();
+            }
+
+            getRandomSafety() {
+                const safetyLevels = ['safe', 'caution', 'unsafe'];
+                return safetyLevels[Math.floor(Math.random() * safetyLevels.length)];
+            }
+
+            setupEventListeners() {
+                document.addEventListener('keydown', (e) => {
+                    e.preventDefault();
+                    switch(e.key) {
+                        case 'ArrowUp': this.moveCharacter('up'); break;
+                        case 'ArrowDown': this.moveCharacter('down'); break;
+                        case 'ArrowLeft': this.moveCharacter('left'); break;
+                        case 'ArrowRight': this.moveCharacter('right'); break;
+                    }
+                });
+            }
+
+            moveCharacter(direction) {
+                let newX = this.currentX;
+                let newY = this.currentY;
+
+                switch(direction) {
+                    case 'up':
+                        newY -= this.moveStep;
+                        break;
+                    case 'down':
+                        newY += this.moveStep;
+                        break;
+                    case 'left':
+                        newX -= this.moveStep;
+                        break;
+                    case 'right':
+                        newX += this.moveStep;
+                        break;
+                }
+
+                // Check if new position is on a valid street
+                const streetAtPosition = this.getStreetAtPosition(newX, newY);
+                
+                if (streetAtPosition && this.isValidPosition(newX, newY)) {
+                    this.currentX = newX;
+                    this.currentY = newY;
+                    this.updateCharacterPosition();
+                    
+                    // Check if we entered a new street
+                    if (this.currentStreet !== streetAtPosition) {
+                        this.currentStreet = streetAtPosition;
+                        this.revealStreetSafety(streetAtPosition);
+                    }
+                }
+            }
+
+            isValidPosition(x, y) {
+                // Keep character within map bounds
+                return x >= 10 && x <= 790 && y >= 10 && y <= 590;
+            }
+
+            getStreetAtPosition(x, y) {
+                for (const [streetName, data] of Object.entries(this.streets)) {
+                    const bounds = data.bounds;
+                    if (x >= bounds.minX && x <= bounds.maxX && 
+                        y >= bounds.minY && y <= bounds.maxY) {
+                        return streetName;
+                    }
+                }
+                return null;
+            }
+
+            updateCharacterPosition() {
+                this.character.setAttribute('cx', this.currentX);
+                this.character.setAttribute('cy', this.currentY);
+                this.characterText.setAttribute('x', this.currentX);
+                this.characterText.setAttribute('y', this.currentY + 5);
+            }
+
+            revealStreetSafety(streetName) {
+                const streetData = this.streets[streetName];
+                if (!streetData) return;
+
+                // Mark street as visited and color it
+                if (!this.visitedStreets.has(streetName)) {
+                    this.visitedStreets.add(streetName);
+                    this.colorVisitedStreet(streetName, streetData.safety);
+                }
+
+                this.updateSafetyPanel(streetName, streetData);
+            }
+
+            colorVisitedStreet(streetName, safety) {
+                const streetElements = document.querySelectorAll(`[data-street="${streetName}"]`);
+                streetElements.forEach(element => {
+                    element.classList.add('visited', safety);
+                });
+            }
+
+            updateSafetyPanel(streetName, streetData) {
+                const { safety, description } = streetData;
+                
+                const safetyInfo = {
+                    safe: {
+                        icon: '✅',
+                        status: 'Safe Zone',
+                        message: 'Street is safe',
+                        tips: 'This area has good lighting, regular foot traffic, and security presence. Safe for walking at all times.'
+                    },
+                    caution: {
+                        icon: '⚠️',
+                        status: 'Caution Zone',
+                        message: 'Be careful',
+                        tips: 'Exercise caution in this area. Stay alert, avoid walking alone late at night, and consider alternate routes if possible.'
+                    },
+                    unsafe: {
+                        icon: '🚨',
+                        status: 'Unsafe Zone',
+                        message: 'Danger detected',
+                        tips: 'HIGH RISK AREA: Poor lighting, isolated location, or recent incidents reported. Avoid if possible, especially after dark.'
+                    }
+                };
+
+                const info = safetyInfo[safety];
+                
+                this.safetyPanel.className = `safety-panel ${safety}`;
+                this.safetyPanel.innerHTML = `
+                    <div class="safety-status">
+                        <span class="safety-icon">${info.icon}</span>
+                        <span>${info.status} – ${info.message}</span>
+                    </div>
+                    <div class="street-name">${streetName}</div>
+                    <div class="safety-description">${description}</div>
+                    <div class="safety-tips ${safety}">
+                        <strong>Safety Tips:</strong><br>
+                        ${info.tips}
+                    </div>
+                `;
+            }
+
+            checkCurrentStreet() {
+                const streetAtPosition = this.getStreetAtPosition(this.currentX, this.currentY);
+                if (streetAtPosition) {
+                    this.currentStreet = streetAtPosition;
+                    this.revealStreetSafety(streetAtPosition);
+                }
+            }
+
+            resetCharacter() {
+                // Reset to starting position
+                this.currentX = 185;
+                this.currentY = 162;
+                this.currentStreet = null;
+                
+                // Clear visited streets
+                this.visitedStreets.clear();
+                
+                // Reset street colors
+                const visitedStreets = document.querySelectorAll('.street.visited');
+                visitedStreets.forEach(street => {
+                    street.classList.remove('visited', 'safe', 'caution', 'unsafe');
+                });
+                
+                // Re-randomize safety levels
+                Object.keys(this.streets).forEach(streetName => {
+                    this.streets[streetName].safety = this.getRandomSafety();
+                });
+                
+                // Reset panel
+                this.safetyPanel.className = 'safety-panel';
+                this.safetyPanel.innerHTML = `
+                    <div class="initial-message">
+                        <h3>🚶‍♀️ Start Exploring</h3>
+                        <p>Use arrow keys to navigate through the streets. Safety information will be revealed as you explore different areas.</p>
+                    </div>
+                `;
+                
+                this.updateCharacterPosition();
+                this.checkCurrentStreet();
+            }
+        }
+
+        // Initialize the navigator
+        const navigator = new StreetSafetyNavigator();
+
+        // Global functions for button controls
+        function moveCharacter(direction) {
+            navigator.moveCharacter(direction);
+        }
+
+        function resetCharacter() {
+            navigator.resetCharacter();
+        }
+    </script>
+</body>
+</html>

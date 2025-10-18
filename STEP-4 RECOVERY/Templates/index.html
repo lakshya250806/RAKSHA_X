@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health chatbot</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 MindCare</h1>
+        <p>Your compassionate AI mental health support companion</p>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message">
+                <h3>Welcome to MindCare! 🌟</h3>
+                <p>I'm here to provide support and listen. Feel free to share what's on your mind.</p>
+                <p><small>Remember: I'm not a replacement for professional help, but I'm here to support you.</small></p>
+            </div>
+        </div>
+        <div class="loading" id="loading">
+            MindCare is thinking... 💭
+        </div>
+        <div class="input-container">
+            <input type="text" id="messageInput" class="message-input" 
+                   placeholder="Share what's on your mind..." 
+                   maxlength="500">
+            <button id="sendButton" class="send-button">Send</button>
+        </div>
+    </div>
+
+    <button class="crisis-button" onclick="showCrisisResources()">
+        🆘 Crisis Help
+    </button>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

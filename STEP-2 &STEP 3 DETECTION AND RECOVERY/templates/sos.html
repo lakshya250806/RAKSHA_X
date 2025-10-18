@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SOS Alert</title>
+    <link rel="stylesheet" href="/static/theme.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="brand">RAKHA X</div>
+        <h2>🚨 Emergency Detected!</h2>
+        <p>System flagged this environment as unsafe.</p>
+        <audio controls>
+          <source src="{{ url_for('static', filename='uploads/' + filename) }}" type="audio/wav">
+        </audio>
+        <br><br>
+        <a href="{{ url_for('send_sos', filename=filename) }}">
+          <button class="map-unsafe" style="padding:10px 20px; font-size:18px; border:none; border-radius:8px;">
+            🚨 Send SOS via WhatsApp
+          </button>
+        </a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+
+:root {
+  /* Brand Colors */
+  --color-brand-primary: #D72660;
+  --color-brand-accent: #FFB7C5;
+
+  /* Map Overlay Colors */
+  --color-map-safe: #F06292;
+  --color-map-caution: #F8BBD0;
+  --color-map-unsafe: #AD1457;
+
+  /* Status Colors */
+  --color-success: #EC407A;
+  --color-warn: #F48FB1;
+  --color-error: #880E4F;
+
+  /* Backgrounds & Surfaces */
+  --color-bg-default: #FFF0F6;
+  --color-bg-surface: #FFE4EC;
+
+  /* Text Colors */
+  --color-text-primary: #880E4F;
+  --color-text-secondary: #AD1457;
+  --color-text-on-primary: #FFFFFF;
+}
+
+/* Map overlay classes for quick use */
+.map-safe {
+  background: var(--color-map-safe) !important;
+  color: var(--color-text-on-primary) !important;
+}
+.map-caution {
+  background: var(--color-map-caution) !important;
+  color: var(--color-text-on-primary) !important;
+}
+.map-unsafe {
+  background: var(--color-map-unsafe) !important;
+  color: var(--color-text-on-primary) !important;
+}

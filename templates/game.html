@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Safety Navigator - RAKSHA X</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/game.css">
+</head>
+<body>
+    <div class="game-header">
+        <h1>🛡️ Street Safety Navigator</h1>
+        <p>Navigate the city and discover street safety levels in real-time</p>
+        <a href="/" class="back-btn">← Back to Home</a>
+    </div>
+
+    <div class="demo-container">
+        <div class="map-container">
+            <div class="controls">
+                <div class="control-group">
+                    <div class="control-row">
+                        <button class="control-btn" onclick="moveCharacter('up')">↑</button>
+                    </div>
+                    <div class="control-row">
+                        <button class="control-btn" onclick="moveCharacter('left')">←</button>
+                        <button class="control-btn" onclick="moveCharacter('down')">↓</button>
+                        <button class="control-btn" onclick="moveCharacter('right')">→</button>
+                    </div>
+                </div>
+                <button class="control-btn reset-btn" onclick="resetCharacter()">🔄 Reset Position</button>
+            </div>
+
+            <svg class="map-svg" id="mapSvg" viewBox="0 0 800 600">
+                <!-- Background -->
+                <rect width="800" height="600" fill="#f8fafc"/>
+                
+                <!-- Buildings (gray blocks) -->
+                <rect x="50" y="50" width="120" height="80" class="building"/>
+                <rect x="200" y="50" width="100" height="80" class="building"/>
+                <rect x="350" y="50" width="140" height="80" class="building"/>
+                <rect x="520" y="50" width="110" height="80" class="building"/>
+                <rect x="650" y="50" width="120" height="80" class="building"/>
+                
+                <rect x="50" y="180" width="120" height="90" class="building"/>
+                <rect x="200" y="180" width="100" height="90" class="building"/>
+                <rect x="520" y="180" width="110" height="90" class="building"/>
+                <rect x="650" y="180" width="120" height="90" class="building"/>
+                
+                <rect x="50" y="320" width="120" height="85" class="building"/>
+                <rect x="200" y="320" width="100" height="85" class="building"/>
+                <rect x="350" y="320" width="140" height="85" class="building"/>
+                <rect x="520" y="320" width="110" height="85" class="building"/>
+                <rect x="650" y="320" width="120" height="85" class="building"/>
+                
+                <rect x="50" y="450" width="120" height="100" class="building"/>
+                <rect x="200" y="450" width="100" height="100" class="building"/>
+                <rect x="520" y="450" width="110" height="100" class="building"/>
+                <rect x="650" y="450" width="120" height="100" class="building"/>
+                
+                <!-- Parks (green areas) -->
+                <rect x="330" y="180" width="160" height="90" class="park"/>
+                <rect x="330" y="450" width="160" height="100" class="park"/>
+                
+                <!-- Streets (horizontal) -->
+                <rect x="0" y="150" width="800" height="25" class="street" data-street="Main Street" data-safety="safe"/>
+                <rect x="0" y="290" width="800" height="25" class="street" data-street="Central Avenue" data-safety="caution"/>
+                <rect x="0" y="420" width="800" height="25" class="street" data-street="Oak Boulevard" data-safety="unsafe"/>
+                
+                <!-- Streets (vertical) -->
+                <rect x="175" y="0" width="20" height="600" class="street" data-street="First Street" data-safety="safe"/>
+                <rect x="305" y="0" width="20" height="600" class="street" data-street="Second Street" data-safety="caution"/>
+                <rect x="495" y="0" width="20" height="600" class="street" data-street="Third Street" data-safety="unsafe"/>
+                <rect x="635" y="0" width="20" height="600" class="street" data-street="Fourth Street" data-safety="safe"/>
+                
+                <!-- Additional connecting streets -->
+                <rect x="0" y="25" width="800" height="20" class="street" data-street="North Road" data-safety="caution"/>
+                <rect x="0" y="575" width="800" height="25" class="street" data-street="South Street" data-safety="unsafe"/>
+                
+                <!-- Character (female icon) -->
+                <circle id="character" cx="185" cy="162" r="12" class="character"/>
+                <text x="185" y="167" text-anchor="middle" fill="white" font-size="12" font-weight="bold" pointer-events="none">👩</text>
+            </svg>
+        </div>
+
+        <div class="sidebar">
+            <div class="safety-panel" id="safetyPanel">
+                <div class="initial-message">
+                    <h3>🚶‍♀️ Start Exploring</h3>
+                    <p>Use arrow keys to navigate through the streets. Safety information will be revealed as you explore different areas.</p>
+                </div>
+            </div>
+
+            <div class="legend">
+                <h3>Safety Levels</h3>
+                <div class="legend-item">
+                    <div class="legend-dot safe-dot"></div>
+                    <span>Safe Zone - Well protected area</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot caution-dot"></div>
+                    <span>Caution Zone - Moderate risk</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot unsafe-dot"></div>
+                    <span>Unsafe Zone - High risk area</span>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <strong>How to Navigate:</strong><br>
+                • Use ↑↓←→ arrow keys to move<br>
+                • Character moves along street paths only<br>
+                • Safety status reveals when entering new streets<br>
+                • Explore different areas to discover safety levels
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/game.js"></script>
+</body>
+</html>

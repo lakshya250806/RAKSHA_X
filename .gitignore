@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Distribution
+build/
+dist/
+*.egg-info/
+
+# Model & large files
+vosk_model/
+vosk-model-small-en-us-0.15/
+vosk_model.zip
+*.h5
+*.pb
+*.tflite
+/models/
+*.ckpt
+
+# Static uploads and user data (keep out of git history)
+static/uploads/
+STEP-2 &STEP 3 DETECTION AND RECOVERY/static/uploads/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git LFS hint
+# Consider using git-lfs for large model files: https://git-lfs.github.com/

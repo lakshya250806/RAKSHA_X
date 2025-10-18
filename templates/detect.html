@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Detection - RAKSHA X</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="brand">RAKHA X</div>
+        <h2>🔊 Smart Audio Detection System</h2>
+        <p>Detects risky sounds and emergency phrases in real-time.</p>
+        <a href="/" class="back-btn">← Back to Home</a>
+
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept="audio/*" required>
+            <br>
+            <input type="submit" value="Upload & Analyze" class="btn">
+        </form>
+
+        {% if results %}
+            <h3>Audio Analysis Results:</h3>
+            <ul>
+                {% for label, score in results %}
+                    <li>{{ label }} ({{ score }}%)</li>
+                {% endfor %}
+            </ul>
+
+            {% if speech_text %}
+                <h3>Speech Detected:</h3>
+                <p><b>{{ speech_text }}</b></p>
+            {% endif %}
+            
+            {% if results[0][0] == "Audio Analysis" %}
+                <div class="model-warning">
+                    <h4>⚠️ Model Status</h4>
+                    <p>Audio analysis models are not fully available. Basic file processing completed.</p>
+                    <p>You can still manually trigger an emergency if needed.</p>
+                    <a href="/sos/{{ filename if filename else '' }}" class="btn btn-police">🚨 Manual Emergency Alert</a>
+                </div>
+            {% endif %}
+
+            {% if alert %}
+                <div class="emergency-alert">
+                    <h3>🚨 EMERGENCY DETECTED! 🚨</h3>
+                    <p>Unsafe audio patterns detected in your environment!</p>
+                    <p>Redirecting to emergency SOS page...</p>
+                    <div class="redirect-countdown">Redirecting in <span id="countdown">3</span> seconds...</div>
+                </div>
+                <script>
+                    // Countdown and redirect to SOS page
+                    let countdown = 3;
+                    const countdownElement = document.getElementById('countdown');
+                    
+                    const timer = setInterval(function() {
+                        countdown--;
+                        countdownElement.textContent = countdown;
+                        
+                        if (countdown <= 0) {
+                            clearInterval(timer);
+                            window.location.href = "/sos/{{ filename }}";
+                        }
+                    }, 1000);
+                </script>
+            {% else %}
+                <p class="map-safe">✅ Environment Safe</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>
