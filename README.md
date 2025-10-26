@@ -1,32 +1,55 @@
-# RAKHA X - Safety & Support Platform
+![RAKSHA X Banner](static/banner.png)
 
-A comprehensive Flask web application that combines street safety navigation, audio detection, emergency alerts, and AI-powered mental health support.
+# 🚨 RAKSHA X – Safety & Support Platform  
 
-## Features
+> 🧠 AI-powered safety & mental wellness platform built with **Flask**, **TensorFlow (YAMNet)**, and **Gemini AI**.  
+> Designed to make streets safer and mental health support more accessible.
+
+---
+
+## 🧰 Built With
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?logo=flask&logoColor=white)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?logo=tensorflow&logoColor=white)
+![Twilio](https://img.shields.io/badge/Twilio-F22F46?logo=twilio&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-4285F4?logo=google&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
+
+---
+
+## 🌟 Overview
+**RAKSHA X** is a comprehensive Flask web application combining:  
+- 🧭 Real-time **street safety navigation**  
+- 🎮 **Interactive awareness game** on urban safety  
+- 🔊 **Audio-based emergency detection** using YAMNet  
+- 🚨 **SOS alerts** via Twilio WhatsApp integration  
+- 💬 **Gemini-powered chatbot** for mental wellness support  
+
+---
+
+## 🚀 Features
 
 ### 🎮 Street Safety Game (`/game`)
-- Interactive street navigation game
-- Real-time safety zone detection
-- Educational safety tips and warnings
-- Responsive controls (arrow keys or buttons)
+- Interactive map navigation with safety zones  
+- Real-time safety level feedback  
+- Educational tips and warnings  
 
 ### 🔊 Audio Detection (`/detect`)
-- YAMNet-powered audio classification
-- Emergency sound detection (screams, gunshots, explosions)
-- Speech-to-text analysis for emergency keywords
-- Automatic SOS trigger on danger detection
+- Detects screams, gunshots, and explosions  
+- Speech-to-text emergency keyword analysis  
+- Auto-trigger SOS alerts  
 
 ### 🚨 SOS Alert System (`/sos`)
-- WhatsApp integration via Twilio
-- Emergency contact notifications
-- Audio evidence playback
-- Quick access to all safety features
+- WhatsApp alerts via Twilio API  
+- Plays back audio evidence  
+- One-click emergency contact notification  
 
 ### 🧠 AI Chatbot (`/chatbot`)
-- Gemini-powered mental health support
-- Crisis detection and intervention
-- Safety guidance and emotional support
-- Resource recommendations
+- Gemini-powered mental health chat  
+- Crisis detection & emotional support  
+- Resources and safety guidance  
 
 ## Project Structure
 
@@ -191,3 +214,4 @@ For issues or questions:
 2. Verify all dependencies are installed
 3. Ensure API keys are correctly configured
 4. Check console logs for error messages
+
